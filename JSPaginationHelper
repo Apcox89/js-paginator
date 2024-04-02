@@ -1,0 +1,97 @@
+class PaginationJSHelper
+{
+  static createPaginationDetails(modelCurrentPage, modelTotalPages, modelTotalItems, modelPageSize)
+  {
+    var totalDisplayBlocks = Math.ceil(modelTotalItems / modelPageSize)
+    let paginationDetails =
+    {
+      displayBlocksAvailable: totalDisplayBlocks,
+      showLeft: false,
+      showRight: false,
+      start: 0,
+      end: 0,
+      startPageItem: 0,
+      endPageItem: 0
+    };
+
+    //logic for calculating pagination details displayBlocks and passing to object
+    paginationDetails.start = modelCurrentPage - Math.floor(totalDisplayBlocks / 2);
+    paginationDetails.end = paginationDetails.start + totalDisplayBlocks - 1;
+
+    if (paginationDetails.start < 1) {
+        paginationDetails.start = 1;
+        paginationDetails.end = Math.min(modelTotalPages, totalDisplayBlocks);
+    }
+
+    if (paginationDetails.end > modelTotalPages) {
+        paginationDetails.end = modelTotalPages;
+        paginationDetails.start = Math.max(1, modelTotalPages - totalDisplayBlocks + 1);
+    }
+
+    paginationDetails.showLeft = modelCurrentPage > 1;
+    paginationDetails.showRight = modelCurrentPage < modelTotalPages;
+
+    paginationDetails.startPageItem = (modelCurrentPage - 1) * modelPageSize + 1;
+    paginationDetails.endPageItem = Math.min(modelCurrentPage * modelPageSize, modelTotalItems);
+
+    return paginationDetails;
+  }
+
+  static generateHtmlForPagination(baseUrl, paginationDetails, modelCurrentPage, modelTotalPages, totalItems, modelPageSize)
+  {
+    var previousUrl = modelCurrentPage > 1 ? PaginationHelper.getUrl(baseUrl, modelCurrentPage - 1, modelPageSize) : null;
+    var nextUrl = modelCurrentPage < modelTotalPages ? PaginationHelper.getUrl(baseUrl, modelCurrentPage + 1, modelPageSize) : null;
+
+    var paginationHtml = "";
+    if (paginationDetails.startPageItem > 0) 
+    {
+      paginationHtml += '<div style="display: inline; float: right;">';
+      paginationHtml += 'Showing ' + paginationDetails.startPageItem + ' to ' + paginationDetails.endPageItem + ' of ' + totalItems + ' entries';
+      paginationHtml += '</div><br/>';
+    }
+
+    if (modelTotalPages > 0)
+    {
+      paginationHtml += '<div style="display: inline; float: right;">';
+      paginationHtml += '<ul class="pagination">';
+
+      //inner-logic for li-items of ul here:
+      if (modelCurrentPage == 1)
+      {
+        paginationHtml += '<li class="paginate_button previous disabled"><a href="#">Previous</a></li>';
+      }
+      else {
+        paginationHtml += '<li class="paginate_button"><a class="page-link" href="' + previousUrl + '">Previous</a></li>';
+      }
+
+      for (var i = paginationDetails.start; i <= paginationDetails.end; i++) {
+        paginationHtml += '<li class="paginate_button ' + (i == modelCurrentPage ? 'active' : '') + '"><a class="page-link" href="' + PaginationHelper.getUrl(baseUrl, i, modelPageSize) + '">'+ i +' </a></li>';
+      }
+
+      if (modelCurrentPage < modelTotalPages) {
+        paginationHtml += '<li class="paginate_button"><a class="page-link" href="' + nextUrl + '">Next</a></li>';
+      }
+      else {
+        paginationHtml += '<li class="paginate_button next disabled"><a href="#">Next</a></li>';
+      }
+
+      paginationHtml += '</ul></div>';
+    }
+
+    return paginationHtml;
+
+  }
+  //url-string-helper
+  static getUrl(baseUrl, pageNumber, pageSize)
+  {
+    var url = baseUrl + "?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+    return url;
+  }
+  //page-size-filter drop-down helper
+  static changePageSize(pageSizeElementId, baseUrl) {
+    var pageSizeSelect = document.getElementById(pageSizeElementId);
+    var pageSize = pageSizeSelect.options[pageSizeSelect.selectedIndex].text;
+    location.href = baseUrl + '?pageNumber=1&pageSize=' + pageSize;
+  }
+
+}
