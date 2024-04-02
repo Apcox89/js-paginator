@@ -1,9 +1,9 @@
-<div id="paginationJSHelper" style="width:90%; margin:0 auto;">
+<div id="paginationJSHelper" style="width:10% margin:0 auto;">
     <script src="~/PaginationJSHelper.js"></script>
       <script>
-        let paginationDetails = PaginationHelper.createPaginationDetails(Model.Pagination.CurrentPage, Model.Pagination.TotalPages, Model.Pagination.TotalItems, Model.Pagination.PageSize);
-        let getUrl = PaginationHelper.getUrl('@Model.BaseUrl', Model.Pagination.CurrentPage, Model.Pagination.PageSize);
-        let paginationHtml = PaginationHelper.generateHtmlForPagination('@Model.BaseUrl', paginationDetails, Model.Pagination.CurrentPage, Model.Pagination.TotalPages, Model.Pagination.TotalItems, Model.Pagination.PageSize);
+        let paginationDetails = PaginationJSHelper.createPaginationDetails(Model.Pagination.CurrentPage, Model.Pagination.TotalPages, Model.Pagination.TotalItems, Model.Pagination.PageSize);
+        let getUrl = PaginationJShelper.getUrl('@Model.BaseUrl', Model.Pagination.CurrentPage, Model.Pagination.PageSize);
+        let paginationHtml = PaginationJSHelper.generateHtmlForPagination('@Model.BaseUrl', paginationDetails, Model.Pagination.CurrentPage, Model.Pagination.TotalPages, Model.Pagination.TotalItems, Model.Pagination.PageSize);
         document.write(paginationHtml);
     </script>
 </div>
